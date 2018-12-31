@@ -74,9 +74,8 @@ func doMount(c *cli.Context) error {
 	profileDir := path.Join(user.HomeDir, ".nvlmm/profiles", profile)
 	workDir := path.Join(user.HomeDir, ".nvlmm/workdir")
 
-	opts := fmt.Sprintf("lowerdir=%s,upperdir=%s,workdir=%s", profileDir, dataDir, workDir)
-	err = mount.Mount("overlay", dataDir, "overlay", opts)
-	return err
+	opts := fmt.Sprintf("lowerdir=%s,upperdir=%s,workdir=%s", dataDir, profileDir, workDir)
+	return mount.Mount("overlay", dataDir, "overlay", opts)
 }
 
 func doUnmount(c *cli.Context) error {
@@ -87,17 +86,5 @@ func doUnmount(c *cli.Context) error {
 
 	dataDir := path.Join(user.HomeDir, ".steam/steam/steamapps/common/Fallout New Vegas/Data")
 
-	for {
-		isMount, err := mount.Mounted(dataDir)
-		if err != nil {
-			return err
-		} else if !isMount {
-			return nil
-		}
-
-		err = mount.Unmount(dataDir)
-		if err != nil {
-			return err
-		}
-	}
+	return mount.Unmount(dataDir)
 }
